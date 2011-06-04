@@ -8,6 +8,6 @@ The base distribution provides a networking implementation using jBoss Netty. Ne
 
 Developers
 ==========
-Canownueasy (Thomas Nappo)
-eThug (Harry Andreas)
-Sinisoul (Hadyn Fitzgerald)
+Canownueasy (Thomas Nappo)<br />
+eThug (Harry Andreas)<br />
+Sinisoul (Hadyn Fitzgerald)<br />
