@@ -9,5 +9,4 @@ public class _DummyPacket implements PacketHandler {
 	@Override
 	public void handle(InputStream in, Player player) {
 	}
-
 }

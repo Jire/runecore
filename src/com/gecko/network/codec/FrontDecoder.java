@@ -107,32 +107,40 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			int loginType = buffer.readUnsignedByte();
 			
 			if (loginType != 16 && loginType != 18) {
-				throw new IOException("Incompatible login type!");
+                            throw new IOException("Incompatible login type!");
 			}
 			
 			int loginSize = buffer.readUnsignedShort();
 			
 			if (buffer.readableBytes() < loginSize) return false;
 			
-			byte[] payload = new byte[loginSize];
-			buffer.readBytes(payload);
+			//byte[] payload = new byte[loginSize];
+			//buffer.readBytes(payload);
 			
 			int loginSizeC = loginSize - (36 + 1 + 1 + 2);
 			if (loginSizeC < 0) return false;
 			
+                        /* Check the revision */
 			revCheck(buffer);
+                        
+                        /* @see Login.md */
+                        buffer.skipBytes((5 * 1) + (2 * 2));
 			
-			boolean highMem = buffer.readByte() == 0; 
-			
-			/* Not sure what this is, value is always 19. */
-			buffer.readByte();
+                        /* @see Login.md */
+                        buffer.skipBytes(24);
+                        
+                        /* The settings string from the client */
+                        String settings = BufferUtils.readRS2String(buffer); 
+                        
+                        /* @see Login.md */
+                        buffer.skipBytes((4 * 2) + (2 * 1));
 			
 			/* Skip over the cache indices */
-			for (int i = 0; i < 16; i++) buffer.readInt();
+			for (int i = 0; i < 28; i++) buffer.readInt();
 			
 			/* RSA security enforcement */
 			if (buffer.readUnsignedByte() != 10) {
-				throw new IOException("Invalid RSA code!");
+                            throw new IOException("Invalid RSA code!");
 			}
 			
 			/*
@@ -145,21 +153,7 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			 */
 			int[] sessionKeys = new int[4];
 			for (int i = 0; i < sessionKeys.length; i++)
-				sessionKeys[i] = buffer.readInt();
-			
-			/*
-			 * This is the user identification key.
-			 * 
-			 * The UID we receive must match our predefined
-			 * UID, which ensures any received login request
-			 * was from our client.
-			 */
-			if (buffer.readInt() != 59872) {
-				/*
-				 * We would stop it here, but the client
-				 * just sends random numbers, making this useless.
-				 */
-			}
+				sessionKeys[i] = buffer.readInt();			
 			
 			/*
 			 * Now required security procedures have passed.
@@ -167,7 +161,7 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			 */
 			String username = NameUtils.longToName(buffer.readLong());
 			String password = BufferUtils.readRS2String(buffer);
-			
+                        
 			/* Start the input ciphering. */
 			ISAACCipher inCipher = new ISAACCipher(sessionKeys);
 			
@@ -202,8 +196,8 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			 * the response and close the connection channel.
 			 */
 			if (returnCode != 2) {
-				channel.write(loginResponse).addListener(ChannelFutureListener.CLOSE);
-				return false;
+                            channel.write(loginResponse).addListener(ChannelFutureListener.CLOSE);
+                            return false;
 			}
 			
 			/*
@@ -240,7 +234,8 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 	 * @throws IOException Should the revision not match.
 	 */
 	private void revCheck(ChannelBuffer buffer) throws IOException {
-		if (buffer.readInt() != 525) throw new IOException("Revision mismatch!");
+            int rev = buffer.readInt();
+		if (rev != 525) throw new IOException("Revision mismatch!");
 	}
 	
 	public FrontDecoder() {

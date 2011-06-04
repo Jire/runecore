@@ -24,18 +24,15 @@ public class Decoder extends FrameDecoder {
 
 	@Override
 	protected Object decode(ChannelHandlerContext ctx, Channel channel, ChannelBuffer buffer) {
-		int id = buffer.readUnsignedByte(); // operation code
-		int size = Constants.PACKET_SIZES[id];
-		if (size < 0) size = buffer.readUnsignedByte();
-		if (size > buffer.readableBytes() || size <= 0) return null;
-		
-		byte[] data = new byte[size];
-		buffer.readBytes(data);
-		
-		Packet packet = new Packet(id, data);
-		PacketManager.handle(id, packet.toStream(), player); // handle packet
-		
-		return packet;
+            int id = buffer.readUnsignedByte(); // operation code
+            int size = Constants.PACKET_SIZES[id];
+            if (size < 0) size = buffer.readUnsignedByte();
+            if (size > buffer.readableBytes() || size <= 0) return null;
+            byte[] data = new byte[size];
+            buffer.readBytes(data);
+            Packet packet = new Packet(id, data);
+            PacketManager.handle(id, packet.toStream(), player); // handle packet
+            return packet;
 	}
 
 }

@@ -42,16 +42,17 @@ public class Server {
 		return taskScheduler;
 	}
 	
+        /**
+         * 
+         * @param args The command line arguments. 
+         */
 	public static void main(String[] args) {
-		int port = Integer.parseInt(args[0]);
-		
-		bootstrap.setOption("keepAlive", true);
-		bootstrap.setOption("reuseAddress", true);
-		bootstrap.setOption("child.tcpNoDelay", true);
-		bootstrap.setPipelineFactory(new PipelineFactory());
-		bootstrap.bind(new InetSocketAddress(port));
-		
-		logger.info("Server listening: " + port);
+            int port = Integer.parseInt(args[0]);		
+            bootstrap.setOption("keepAlive", true);
+            bootstrap.setOption("reuseAddress", true);
+            bootstrap.setOption("child.tcpNoDelay", true);
+            bootstrap.setPipelineFactory(new PipelineFactory());
+            bootstrap.bind(new InetSocketAddress(port));
+            logger.info("Server listening: " + port);
 	}
-
 }
