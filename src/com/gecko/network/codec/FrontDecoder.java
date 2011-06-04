@@ -41,18 +41,20 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 
 	@Override
 	protected Object decode(ChannelHandlerContext ctx, Channel channel, ChannelBuffer buffer, State state) throws Exception {
+		logger.info("State=" + state.name());
 		switch (state) {
 		case HANDSHAKE:
 			if (buffer.readableBytes() < 2) return false;
 			
 			/* get the operation */
-			switch (buffer.readUnsignedByte()) {
+			int stage = buffer.readUnsignedByte();
+			logger.info("Stage=" + stage);
+			switch (stage) {
 			case 15: // Update
 				revCheck(buffer);
 				
 				/* notify client we passed revision check */
 				channel.write(new OutputStream().write(0));
-				
 				checkpoint(State.ON_DEMAND);
 				break;
 			case 14: // Login
@@ -75,7 +77,7 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			buffer.skipBytes(8); // request bytes
 
 			/*
-			 * here's where we give the clients the update
+			 * here's where we give the client the update
 			 * keys. these "trick" the client to pass the on-demand
 			 * update request stage.
 			 * 
@@ -84,7 +86,15 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			channel.write(new OutputStream().write(Constants.UPDATE_KEYS)).addListener(ChannelFutureListener.CLOSE);
 			return true;
 		case WORLD_UPDATE:
-			break;
+			/*
+			 * here's where we give the client the world
+			 * keys. these bypass the client's world list
+			 * stage.
+			 * 
+			 * TODO: write world server?
+			 */
+			channel.write(new OutputStream().write(Constants.WORLD_LIST_DATA)).addListener(ChannelFutureListener.CLOSE);
+			return true;
 		case FINISH:
 			if (buffer.readableBytes() < 3) return false;
 			
@@ -100,10 +110,15 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 				throw new IOException("Incompatible login type!");
 			}
 			
-			int loginSize = buffer.readUnsignedByte();
-			int loginSizeC = loginSize - 69; // encrypted size
+			int loginSize = buffer.readUnsignedShort();
 			
-			if (buffer.readableBytes() < loginSize || loginSizeC <= 0) return false;
+			if (buffer.readableBytes() < loginSize) return false;
+			
+			byte[] payload = new byte[loginSize];
+			buffer.readBytes(payload);
+			
+			int loginSizeC = loginSize - (36 + 1 + 1 + 2);
+			if (loginSizeC < 0) return false;
 			
 			revCheck(buffer);
 			
