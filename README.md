@@ -9,8 +9,7 @@ Netty is extremely fast, and automatically scales toward the host environment.
 Our implementation accomplishes tasks fast, but also in a clean manner.
 
 Developers
-----------
-Canownueasy (Thomas Nappo)
+---------- Canownueasy (Thomas Nappo)
 
 eThug (Harry Andreas)
 
