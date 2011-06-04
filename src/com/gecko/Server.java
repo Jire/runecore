@@ -9,6 +9,8 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
 import com.gecko.network.PipelineFactory;
 import com.gecko.task.TaskScheduler;
+import com.gecko.util.ServerConfiguration;
+import com.gecko.util.XStreamParser;
 
 /**
  * Represents the game server.
@@ -20,6 +22,17 @@ public class Server {
 	 * Logs for the server.
 	 */
 	private static final Logger logger = Logger.getLogger(Server.class.getName());
+	
+	/**
+	 * The XStream instance
+	 */
+	public static XStreamParser xStream;
+	
+	/**
+	 * Server config 
+	 */
+	public static ServerConfiguration serverConfig = new ServerConfiguration();
+	
 	
 	/**
 	 * Creates and bootstraps the server to a channel.
@@ -34,6 +47,7 @@ public class Server {
 	 */
 	private static final TaskScheduler taskScheduler = new TaskScheduler();
 	
+	
 	/**
 	 * Gets the server's {@link TaskScheduler}
 	 * @return The server's task scheduler which schedules task to be run.
@@ -42,16 +56,35 @@ public class Server {
 		return taskScheduler;
 	}
 	
+	/**
+	 * Invoked on startup of the JVM application
+	 * @param args The program arguments
+	 */
 	public static void main(String[] args) {
+		/**
+		 * Read arguements
+		 */
 		int port = Integer.parseInt(args[0]);
 		
+		/**
+		 * Setup the server configuration
+		 * and read files/cache
+		 */
+		serverConfig.setupServer();
+		
+		/**
+		 * Setup the networking
+		 */
 		bootstrap.setOption("keepAlive", true);
 		bootstrap.setOption("reuseAddress", true);
 		bootstrap.setOption("child.tcpNoDelay", true);
-		bootstrap.setPipelineFactory(new PipelineFactory());
+		bootstrap.setPipelineFactory(new PipelineFactory());		
 		bootstrap.bind(new InetSocketAddress(port));
 		
+		/**
+		 * Done reading msg
+		 */
 		logger.info("Server listening: " + port);
 	}
-
+		
 }

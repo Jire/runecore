@@ -2,6 +2,8 @@ package com.gecko;
 
 public final class Constants {
 	
+	public static final String SCRIPT_DIR = "./scripts/";
+	
 	/**
 	 * Keys for updating.
 	 */
