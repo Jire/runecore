@@ -1,6 +1,7 @@
 Unencrypted Block
 ===========
 
+short - packet size
 int - revision
 byte
 byte
