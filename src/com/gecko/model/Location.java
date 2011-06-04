@@ -15,11 +15,11 @@ public class Location extends Tile {
 	}
 	
 	public int getLocalX() {
-		return x - 8 * (getRegionX() - 6);
+		return getLocalX(this);
 	}
 	
 	public int getLocalY() {
-		return y - 8 * (getRegionY() - 6);
+		return getLocalY(this);
 	}
 	
 	public int getLocalX(Location l) {
@@ -31,11 +31,11 @@ public class Location extends Tile {
 	}
 	
 	public int getRegionX() {
-		return (x >> 3);
+		return x >> 3;
 	}
 	
 	public int getRegionY() {
-		return (y >> 3);
+		return y >> 3;
 	}
 	
 	public Location(int x, int y, int z) {
@@ -58,6 +58,11 @@ public class Location extends Tile {
 	@Override
 	public boolean equals(Object o) {
 		return super.equals(o) && ((Location) o).z == z;
+	}
+	
+	@Override
+	public String toString() {
+		return "(" + x + "," + y + ")";
 	}
 
 }

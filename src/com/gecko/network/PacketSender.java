@@ -71,21 +71,26 @@ public class PacketSender {
 	 * Sends the map region.
 	 */
 	public PacketSender sendMapRegion() {
-		OutputStream out = new OutputStream(49, Type.BYTE)
+		OutputStream out = new OutputStream(49, Type.SHORT)
 				.writeShortA(player.getLocation().getLocalY())
 				.writeLEShortA(player.getLocation().getLocalX());
 		for (int xCalc = (player.getLocation().getRegionX() - 6) / 8; xCalc <= ((player.getLocation().getRegionX() + 6) / 8); xCalc++) {
 			for (int yCalc = (player.getLocation().getRegionY() - 6) / 8; yCalc <= ((player.getLocation().getRegionY() + 6) / 8); yCalc++) {
 				@SuppressWarnings("unused")
 				int region = yCalc + (xCalc << 8); // 1786653352
-				if ((yCalc != 49) && (yCalc != 149) && (yCalc != 147) && (xCalc != 50) && ((xCalc != 49) || (yCalc != 47))) {
-					for (short s = 0; s < 4; s++) out.writeInteger(0); // xtea
+				if (yCalc != 49 && yCalc != 149 && yCalc != 147 && xCalc != 50 && (xCalc != 49 || yCalc != 47)) {
+					out.writeInteger2(0)
+							.writeInteger2(0)
+							.writeInteger2(0)
+							.writeInteger2(0);
 				}
 			}
 		}
-		player.write(out.writeShortA(player.getLocation().getRegionX())
+		out.writeShortA(player.getLocation().getRegionX())
 				.writeByteA(player.getLocation().getZ())
-				.writeLEShortA((player.getLocation().getRegionY())));
+				.writeLEShortA((player.getLocation().getRegionY()));
+		
+		player.write(out);
 		return this;
 	}
 	

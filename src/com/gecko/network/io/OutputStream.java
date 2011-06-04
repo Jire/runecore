@@ -13,7 +13,7 @@ public class OutputStream extends Packet {
 	}
 	
 	public OutputStream(int id, Type type) {
-		this(id, DEFAULT_SIZE, new byte[DEFAULT_SIZE], true, type);
+		this(id, DEFAULT_SIZE, new byte[DEFAULT_SIZE], id == -1, type);
 	}
 	
 	public OutputStream(byte[] data) {
@@ -57,14 +57,15 @@ public class OutputStream extends Packet {
 		data[position++] = (byte) b;
 		return this;
 	}
+	
+	public OutputStream write(int... b) {
+		for (int v : b) write(v);
+		return this;
+	}
 
 	public OutputStream write(int b) {
 		expand(1);
 		return unsafeWrite(b);
-	}
-	
-	public OutputStream write(boolean b) {
-		return write(b ? 1 : 0);
 	}
 
 	public OutputStream writeByteA(int b) {

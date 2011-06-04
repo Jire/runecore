@@ -22,6 +22,7 @@ public class Encoder extends OneToOneEncoder {
 		if (!(msg instanceof OutputStream)) {
 			throw new IOException("Can only encode OutputStream objects!");
 		}
+		
 		OutputStream out = (OutputStream) msg;
 		if (out.isHeadless()) return ChannelBuffers.wrappedBuffer(out.getData());
 		
@@ -46,7 +47,7 @@ public class Encoder extends OneToOneEncoder {
 			cBuffer.writeByte((byte) out.getLength());
 			break;
 		case SHORT:
-			cBuffer.writeShort(out.getLength());
+			cBuffer.writeShort((short) out.getLength());
 			break;
 		}
 		

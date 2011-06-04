@@ -25,11 +25,11 @@ public class Decoder extends FrameDecoder {
 	@Override
 	protected Object decode(ChannelHandlerContext ctx, Channel channel, ChannelBuffer buffer) {
 		int id = buffer.readUnsignedByte(); // operation code
-		int length = Constants.PACKET_LENGTHS[id];
-		if (length < 0) length = buffer.readUnsignedByte();
-		if (length > buffer.readableBytes() || length <= 0) return null;
+		int size = Constants.PACKET_SIZES[id];
+		if (size < 0) size = buffer.readUnsignedByte();
+		if (size > buffer.readableBytes() || size <= 0) return null;
 		
-		byte[] data = new byte[length];
+		byte[] data = new byte[size];
 		buffer.readBytes(data);
 		
 		Packet packet = new Packet(id, data);
