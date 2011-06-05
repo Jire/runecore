@@ -10,11 +10,10 @@ import com.gecko.util.BufferUtils;
 /**
  * WorldListEncoder.java
  * RuneCore 525 www.runecore.org
- * @author Canownueasy, Sinisoul + Harry Andreas
+ * @author Harry Andreas
  * 5 Jun 2011
  */
 public class WorldListEncoder {
-	
 	
 	/**
 	 * Encodes the world list data
@@ -27,10 +26,9 @@ public class WorldListEncoder {
 		
 		OutputStream packet = new OutputStream();
 		
-		packet.write((byte) (status[0] ? 1 : 0));
-		packet.write((byte) (status[1] ? 1 : 0));
+		packet.write(status[0] ? 1 : 0).write(status[1] ? 1 : 0);
 		
-		if(status[1]) {
+		if (status[1]) {
 			BufferUtils.putSmart(packet, worldListSize);
 			setWorldLocations(packet);
 			BufferUtils.putSmart(packet, 0);
@@ -55,10 +53,10 @@ public class WorldListEncoder {
 			}
 		}
 		
-		final OutputStream finalBuffer = new OutputStream();
-		finalBuffer.writeByte((byte) 0);
-		finalBuffer.writeShort((short) packet.getLength());
-		finalBuffer.writeByte(packet.getData());
+		OutputStream finalBuffer = new OutputStream();
+		finalBuffer.write(0)
+					.writeShort((short) packet.getData().length)
+					.writeByte(packet.getData());
 		
 		return finalBuffer;
 	}

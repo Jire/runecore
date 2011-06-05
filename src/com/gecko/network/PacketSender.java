@@ -36,36 +36,6 @@ public class PacketSender {
 	public PacketSender login() {
 		sendMapRegion();
 		sendGamePane(548);
-		sendWelcomeScreen(378, 20);
-		sendMessage("Welcome to RuneScape.");
-		return this;
-	}
-	
-	/**
-	 * Sends the welcome screen.
-	 * @param topInterface The top interface
-	 * @param buttonInterface The button interface.
-	 */
-	public PacketSender sendWelcomeScreen(int topInterface, int buttonInterface) {
-		player.write(new OutputStream(129).writeShort(buttonInterface).writeShortA(topInterface));
-		return this;
-	}
-	
-	/**
-	 * Sends a server message.
-	 * @param msg The message context to send.
-	 */
-	public PacketSender sendMessage(String msg) {
-		player.write(new OutputStream(158).writeString(msg));
-		return this;
-	}
-	
-	/**
-	 * Sends server messages.
-	 * @param msgs The messages to sends.
-	 */
-	public PacketSender sendMessage(String... msgs) {
-		for (String msg : msgs) sendMessage(msg);
 		return this;
 	}
 	
@@ -73,41 +43,38 @@ public class PacketSender {
 	 * Sends the map region.
 	 */
 	public PacketSender sendMapRegion() {
-		System.out.println("Location: "+player.getLocation().toString());
-		OutputStream out = new OutputStream(93, Type.SHORT)
-				.writeShortA(player.getLocation().getLocalY())
-				.writeLEShortA(player.getLocation().getLocalX());
-		for (int xCalc = (player.getLocation().getRegionX() - 6) / 8; xCalc <= ((player.getLocation().getRegionX() + 6) / 8); xCalc++) {
-			for (int yCalc = (player.getLocation().getRegionY() - 6) / 8; yCalc <= ((player.getLocation().getRegionY() + 6) / 8); yCalc++) {
-				
-				int region = yCalc + (xCalc << 8); // 1786653352
-				if (yCalc != 49 && yCalc != 149 && yCalc != 147 && xCalc != 50 && (xCalc != 49 || yCalc != 47)) {
+		final OutputStream out = new OutputStream(93, Type.SHORT);
+		boolean forceSend = true;
+		if ((player.getLocation().getRegionX() / 8 == 48 || player
+				.getLocation().getRegionX() / 8 == 49)
+				&& player.getLocation().getRegionY() / 8 == 48) {
+			forceSend = false;
+		}
+		if (player.getLocation().getRegionX() / 8 == 48
+				&& player.getLocation().getRegionY() / 8 == 148) {
+			forceSend = false;
+		}
+		for (int xCalc = (player.getLocation().getRegionX() - 6) / 8; xCalc <= (player
+				.getLocation().getRegionX() + 6) / 8; xCalc++) {
+			for (int yCalc = (player.getLocation().getRegionY() - 6) / 8; yCalc <= (player
+					.getLocation().getRegionY() + 6) / 8; yCalc++) {
+				final int region = yCalc + (xCalc << 8);
+				if (forceSend || yCalc != 49 && yCalc != 149 && yCalc != 147
+						&& xCalc != 50 && (xCalc != 49 || yCalc != 47)) {
 					final int[] mapData = Server.getServerConfig().getMapData().get(region);
-					out.write(mapData[0])
-					.write(mapData[1])
-					.write(mapData[2])
-					.write(mapData[3]);
+					out.writeInteger(mapData[0]);
+					out.writeInteger(mapData[1]);
+					out.writeInteger(mapData[2]);
+					out.writeInteger(mapData[3]);
 				}
 			}
 		}
-		out.writeShortA(player.getLocation().getRegionX())
-				.writeByteA(player.getLocation().getZ())
-				.writeLEShortA((player.getLocation().getRegionY()));
+		out.writeLEShort(player.getLocation().getRegionX());
+		out.writeLEShortA(player.getLocation().getRegionY());
+		out.writeShortA(player.getLocation().getLocalX());
+		out.write(player.getLocation().getZ());
+		out.writeShort(player.getLocation().getLocalY());
 		player.write(out);
-		return this;
-	}
-	
-	/**
-	 * Sends a player interaction option.
-	 * @param option The option text.
-	 * @param slot The slot of the option.
-	 * @param position The position of the option.
-	 */
-	public PacketSender sendInteractionOption(String option, int slot, int position) {
-		player.write(new OutputStream(151, Type.BYTE)
-				.writeString(option)
-				.writeByteA(position)
-				.write(slot));
 		return this;
 	}
 	
@@ -120,7 +87,7 @@ public class PacketSender {
 	 */
 	public PacketSender sendGamePane(int pane) {
 		player.write(new OutputStream(230).writeShort(0).writeShort(pane)
-				.write((byte) 0));
+				.write(0));
 		return this;
 	}
 

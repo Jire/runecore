@@ -41,15 +41,12 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 
 	@Override
 	protected Object decode(ChannelHandlerContext ctx, Channel channel, ChannelBuffer buffer, State state) throws Exception {
-		logger.info("State=" + state.name());
 		switch (state) {
 		case HANDSHAKE:
 			if (buffer.readableBytes() < 2) return false;
 			
 			/* get the operation */
-			int stage = buffer.readUnsignedByte();
-			logger.info("Stage=" + stage);
-			switch (stage) {
+			switch (buffer.readUnsignedByte()) {
 			case 15: // Update
 				revCheck(buffer);
 				
@@ -94,7 +91,7 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			 * TODO: write world server?
 			 */
 			final int loginOpcode = buffer.readInt();
-			logger.info("Requesting world list: "+loginOpcode);
+			//logger.info("Requesting world list: "+loginOpcode);
 			//channel.write(WorldListEncoder.encode(channel, loginOpcode == 0, true));
 			channel.write(new OutputStream().write(Constants.WORLD_LIST_DATA)).addListener(ChannelFutureListener.CLOSE);
 			return true;
@@ -199,8 +196,8 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			 * the response and close the connection channel.
 			 */
 			if (returnCode != 2) {
-                            channel.write(loginResponse).addListener(ChannelFutureListener.CLOSE);
-                            return false;
+				channel.write(loginResponse).addListener(ChannelFutureListener.CLOSE);
+				return false;
 			}
 			
 			/*
@@ -212,7 +209,7 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			/*
 			 * TODO: Write out the proper data.
 			 */
-			channel.write(loginResponse.write(0, 0, 0, 0));
+			channel.write(loginResponse.write(0, 0, 0, 0, 0, 0, 0, 0, 0, 1));
 			
 			/* 
 			 * We swap the decoder over. Decoding that is done beyond this point
