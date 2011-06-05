@@ -1,8 +1,11 @@
 package com.gecko;
 
+import java.io.File;
+
 public final class Constants {
 	
 	public static final String SCRIPT_DIR = "./scripts/";
+	public static final File MAPDATA_FILE = new File("data/mapdata.dat");
 	
 	/**
 	 * Keys for updating.

@@ -1,5 +1,6 @@
 package com.gecko.network;
 
+import com.gecko.Server;
 import com.gecko.common.Packet.Type;
 import com.gecko.model.Player;
 import com.gecko.network.io.OutputStream;
@@ -34,6 +35,7 @@ public class PacketSender {
 	 */
 	public PacketSender login() {
 		sendMapRegion();
+		sendGamePane(548);
 		sendWelcomeScreen(378, 20);
 		sendMessage("Welcome to RuneScape.");
 		return this;
@@ -71,25 +73,26 @@ public class PacketSender {
 	 * Sends the map region.
 	 */
 	public PacketSender sendMapRegion() {
-		OutputStream out = new OutputStream(49, Type.SHORT)
+		System.out.println("Location: "+player.getLocation().toString());
+		OutputStream out = new OutputStream(93, Type.SHORT)
 				.writeShortA(player.getLocation().getLocalY())
 				.writeLEShortA(player.getLocation().getLocalX());
 		for (int xCalc = (player.getLocation().getRegionX() - 6) / 8; xCalc <= ((player.getLocation().getRegionX() + 6) / 8); xCalc++) {
 			for (int yCalc = (player.getLocation().getRegionY() - 6) / 8; yCalc <= ((player.getLocation().getRegionY() + 6) / 8); yCalc++) {
-				@SuppressWarnings("unused")
+				
 				int region = yCalc + (xCalc << 8); // 1786653352
 				if (yCalc != 49 && yCalc != 149 && yCalc != 147 && xCalc != 50 && (xCalc != 49 || yCalc != 47)) {
-					out.writeInteger2(0)
-							.writeInteger2(0)
-							.writeInteger2(0)
-							.writeInteger2(0);
+					final int[] mapData = Server.getServerConfig().getMapData().get(region);
+					out.write(mapData[0])
+					.write(mapData[1])
+					.write(mapData[2])
+					.write(mapData[3]);
 				}
 			}
 		}
 		out.writeShortA(player.getLocation().getRegionX())
 				.writeByteA(player.getLocation().getZ())
 				.writeLEShortA((player.getLocation().getRegionY()));
-		
 		player.write(out);
 		return this;
 	}
@@ -105,6 +108,19 @@ public class PacketSender {
 				.writeString(option)
 				.writeByteA(position)
 				.write(slot));
+		return this;
+	}
+	
+	/**
+	 * Sends a game pane.
+	 * 
+	 * @param pane
+	 *            The pane id.
+	 * @return The action sender instance, for chaining.
+	 */
+	public PacketSender sendGamePane(int pane) {
+		player.write(new OutputStream(230).writeShort(0).writeShort(pane)
+				.write((byte) 0));
 		return this;
 	}
 

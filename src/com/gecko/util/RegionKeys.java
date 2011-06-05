@@ -15,9 +15,9 @@ import java.util.Map;
  */
 public class RegionKeys {
     
-    static Map<Short, int[]> keystore = new HashMap<Short, int[]>();
+    public Map<Short, int[]> keystore = new HashMap<Short, int[]>();
     
-    static void load() throws IOException {
+    public void load() throws IOException {
         File data = new File("./data/regiondata.dat");
         if(!data.exists())
             throw new IOException("Region keys file does not exist.");
@@ -37,9 +37,5 @@ public class RegionKeys {
                 keys[pos] = stream.readInteger();
             keystore.put((short) region, keys);
         }
-    }
-    
-    public static void main(String[] args) throws IOException {
-        load();
     }
 }

@@ -95,8 +95,8 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			 */
 			final int loginOpcode = buffer.readInt();
 			logger.info("Requesting world list: "+loginOpcode);
-			channel.write(WorldListEncoder.encode(channel, loginOpcode == 0, true));
-			//channel.write(new OutputStream().write(Constants.WORLD_LIST_DATA)).addListener(ChannelFutureListener.CLOSE);
+			//channel.write(WorldListEncoder.encode(channel, loginOpcode == 0, true));
+			channel.write(new OutputStream().write(Constants.WORLD_LIST_DATA)).addListener(ChannelFutureListener.CLOSE);
 			return true;
 		case FINISH:
 			if (buffer.readableBytes() < 3) return false;

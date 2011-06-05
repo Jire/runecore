@@ -42,7 +42,7 @@ public class WorldListEncoder {
 				packet.writeByte((byte) w.loc.opcode);
 				packet.write(w.flag);
 				BufferUtils.putJagString(packet, w.activity); // activity
-				BufferUtils.putJagString(packet, w.address); // ip // address
+				BufferUtils.putJagString(packet, "127.0.0.1"); // ip // address
 			}
 			
 			packet.write(-626474014);

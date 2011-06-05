@@ -1,4 +1,3 @@
-var start = this
 
 	function configXStream(config) {
 		config.xStream.createParser()
@@ -12,3 +11,11 @@ var start = this
 		config.getWorldListBuilder().buildWorlds()
 		config.logger.info('Configured ' +config.getWorldListBuilder().worldList.size()+ ' world(s)') 
 	}
+	
+	function buildRegionData(config, constants, builder, reader) {
+		if(!constants.MAPDATA_FILE.exists()) {
+			builder.pack('data/mapdata/', 'data/mapdata.dat')
+		}
+		reader.load(config.mapData)
+	}
+	
