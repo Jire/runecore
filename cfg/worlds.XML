@@ -1,7 +1,9 @@
 <list>
-	<worldDef>
-		<name>WORLD1</name>
-		<address>play.runecore.org</address>
-		<loc>null</loc>
-	</worldDef>
+  <worldDef>
+  	<name>World</name>
+  	<activity>-</activity>
+  	<worldId>1</worldId>
+  	<address>play.runecore.org</address>
+  	<loc>COUNTRY_FRANCE</loc>
+  </worldDef>
 </list>

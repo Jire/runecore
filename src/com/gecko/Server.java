@@ -31,7 +31,7 @@ public class Server {
 	/**
 	 * Server config 
 	 */
-	public static ServerConfiguration serverConfig = new ServerConfiguration();
+	private static ServerConfiguration serverConfig = new ServerConfiguration();
 	
 	
 	/**
@@ -56,21 +56,6 @@ public class Server {
 		return taskScheduler;
 	}
 	
-<<<<<<< HEAD
-        /**
-         * 
-         * @param args The command line arguments. 
-         */
-	public static void main(String[] args) {
-            int port = Integer.parseInt(args[0]);		
-            bootstrap.setOption("keepAlive", true);
-            bootstrap.setOption("reuseAddress", true);
-            bootstrap.setOption("child.tcpNoDelay", true);
-            bootstrap.setPipelineFactory(new PipelineFactory());
-            bootstrap.bind(new InetSocketAddress(port));
-            logger.info("Server listening: " + port);
-	}
-=======
 	/**
 	 * Invoked on startup of the JVM application
 	 * @param args The program arguments
@@ -85,7 +70,7 @@ public class Server {
 		 * Setup the server configuration
 		 * and read files/cache
 		 */
-		serverConfig.setupServer();
+		getServerConfig().setupServer();
 		
 		/**
 		 * Setup the networking
@@ -101,6 +86,18 @@ public class Server {
 		 */
 		logger.info("Server listening: " + port);
 	}
-		
->>>>>>> e3b49f78d8b43d6be55cf605ec60dd4ae8dcf3c7
+
+	/**
+	 * @param serverConfig the serverConfig to set
+	 */
+	public static void setServerConfig(ServerConfiguration serverConfig) {
+		Server.serverConfig = serverConfig;
+	}
+
+	/**
+	 * @return the serverConfig
+	 */
+	public static ServerConfiguration getServerConfig() {
+		return serverConfig;
+	}
 }

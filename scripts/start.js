@@ -8,6 +8,7 @@ var start = this
 	
 	function readWorldList(config) {
 		config.logger.info('Loading world list...')
-		config.setWorldList()
-		config.logger.info('Loaded '+config.world.size()+' world(s)') 
+		config.getWorldListBuilder().worldList = config.xStream.getxStreamInstance().fromXML(new java.io.FileInputStream("./cfg/worlds.XML"));
+		config.getWorldListBuilder().buildWorlds()
+		config.logger.info('Configured ' +config.getWorldListBuilder().worldList.size()+ ' world(s)') 
 	}

@@ -9,7 +9,14 @@ package com.gecko.model.world.def;
 public class WorldDef {
 	
 	public WorldDef(String name, String address, WorldLocation loc) {
-		
+		this.name = name;
+		this.address = address;
+		this.loc = loc;
+		flag = loc.opcode;
 	}
+	
+	public int flag, worldId;
+	public String name, address, activity;
+	public WorldLocation loc;
 
 }

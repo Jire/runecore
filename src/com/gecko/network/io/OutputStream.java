@@ -62,6 +62,11 @@ public class OutputStream extends Packet {
 		for (int v : b) write(v);
 		return this;
 	}
+	
+	public OutputStream writeByte(byte... b) {
+		for (int v : b) write((byte)v);
+		return this;
+	}
 
 	public OutputStream write(int b) {
 		expand(1);

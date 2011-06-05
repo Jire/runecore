@@ -1,12 +1,8 @@
 package com.gecko.util;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
-import com.gecko.model.world.def.WorldDef;
+import com.gecko.model.world.def.WorldListBuilder;
 
 /**
  * ServerConfiguration.java
@@ -27,9 +23,9 @@ public class ServerConfiguration {
 	public JavaScriptManager jsManager = new JavaScriptManager();
 	
 	/**
-	 * An ArrayList of world definitions
+	 * WorldListBuilder instance
 	 */
-	public List<WorldDef> world = new ArrayList<WorldDef>();
+	private WorldListBuilder worldListBuilder = new WorldListBuilder();
 		
 	/**
 	 * Logger instance
@@ -41,13 +37,8 @@ public class ServerConfiguration {
 	 */
 	public void setupServer() {
 		call("start.configXStream", this);
-		//call("start.readWorldList", this);
-	}
-	
-	public void setWorldList() throws FileNotFoundException{
-		xStream.getxStreamInstance().fromXML(new FileInputStream("./cfg/worlds.XML"));
-	}
-	
+		call("start.readWorldList", this);
+	}	
 	
 	/**
 	 * Calls a script
@@ -57,5 +48,19 @@ public class ServerConfiguration {
 	 */
 	public Object call(String script, Object... args) {
 		return jsManager.call(script, args);
+	}
+
+	/**
+	 * @param worldListBuilder the worldListBuilder to set
+	 */
+	public void setWorldListBuilder(WorldListBuilder worldListBuilder) {
+		this.worldListBuilder = worldListBuilder;
+	}
+
+	/**
+	 * @return the worldListBuilder
+	 */
+	public WorldListBuilder getWorldListBuilder() {
+		return worldListBuilder;
 	}
 }
