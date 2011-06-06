@@ -92,6 +92,8 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			 */
 			final int loginOpcode = buffer.readInt();
 			//logger.info("Requesting world list: "+loginOpcode);
+			//
+			
 			//channel.write(WorldListEncoder.encode(channel, loginOpcode == 0, true));
 			channel.write(new OutputStream().write(Constants.WORLD_LIST_DATA)).addListener(ChannelFutureListener.CLOSE);
 			return true;
@@ -209,7 +211,18 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			/*
 			 * TODO: Write out the proper data.
 			 */
-			channel.write(loginResponse.write(0, 0, 0, 0, 0, 0, 0, 0, 0, 1));
+			loginResponse.write(3); // rights
+			loginResponse.write(0);
+			loginResponse.write(0);
+			loginResponse.write(0);
+			loginResponse.write(0);
+			loginResponse.write(0);
+			loginResponse.write(0);
+			loginResponse.writeShort(1);//INDEX
+			loginResponse.write(0);
+			loginResponse.write(1);
+			
+			channel.write(loginResponse);
 			
 			/* 
 			 * We swap the decoder over. Decoding that is done beyond this point

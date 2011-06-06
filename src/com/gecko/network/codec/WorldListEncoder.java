@@ -37,9 +37,9 @@ public class WorldListEncoder {
 			
 			for (final WorldDef w : Server.getServerConfig().getWorldListBuilder().worldList) {
 				BufferUtils.putSmart(packet, w.worldId);
-				packet.writeByte((byte) w.loc.opcode);
-				packet.write(w.flag);
-				BufferUtils.putJagString(packet, w.activity); // activity
+				packet.write(0);
+				packet.write(0);
+				BufferUtils.putJagString(packet, ""); // activity
 				BufferUtils.putJagString(packet, "127.0.0.1"); // ip // address
 			}
 			
