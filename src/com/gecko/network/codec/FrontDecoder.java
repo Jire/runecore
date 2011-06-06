@@ -11,6 +11,7 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.replay.ReplayingDecoder;
 
 import com.gecko.Constants;
+import com.gecko.Server;
 import com.gecko.model.Player;
 import com.gecko.model.Session;
 import com.gecko.network.PacketSender;
@@ -209,10 +210,15 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			Player player = new Player(session);
 			
 			/*
+			 * Registers the player 
+			 */
+			Server.registerEntity(player);
+			
+			/*
 			 * TODO: Write out the proper data.
 			 */
 			int rights = 3;
-			int index = 1;
+			int index = player.getIndex();
 			channel.write(
 				loginResponse.write(rights).write(0).
 				write(0).write(0).write(0).write(0).write(0).

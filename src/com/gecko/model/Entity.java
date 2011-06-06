@@ -26,6 +26,14 @@ public abstract class Entity {
 	}
 	
 	/**
+	 * 
+	 * @param id
+	 */
+	public void setIndex(int id) {
+		index = id;
+	}
+	
+	/**
 	 * The entity's tile location on the map grid.
 	 */
 	protected Location location = Location.create(3222, 3222);
@@ -36,6 +44,19 @@ public abstract class Entity {
 	 */
 	public Location getLocation() {
 		return location;
+	}
+	
+	/**
+	 * Returns an Entity as a type in object form
+	 * @param e EntityType of the Entity
+	 * @return The entity as it's true form
+	 */
+	public Object asType(EntityType e) {
+		if(e == EntityType.NPC)
+			return (NPC) this;
+		else if(e == EntityType.PLAYER)
+			return (Player) this;
+		return null;
 	}
 
 }

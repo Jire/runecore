@@ -7,8 +7,13 @@ import java.util.logging.Logger;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
+import com.gecko.model.Entity;
+import com.gecko.model.EntityType;
+import com.gecko.model.NPC;
+import com.gecko.model.Player;
 import com.gecko.network.PipelineFactory;
 import com.gecko.task.TaskScheduler;
+import com.gecko.util.EntityList;
 import com.gecko.util.ServerConfiguration;
 import com.gecko.util.XStreamParser;
 
@@ -33,6 +38,30 @@ public class Server {
 	 */
 	private static ServerConfiguration serverConfig = new ServerConfiguration();
 	
+	/**
+	 * A list of online players
+	 */
+	private static EntityList<Player> onlinePlayers = new EntityList<Player>(Constants.MAXIMUM_PLAYER_ENTITYS);
+	
+	/**
+	 * A list of registered NON PLAYABLE CHARACTERS
+	 */
+	private static EntityList<NPC> registeredNpcs = new EntityList<NPC>(Constants.MAXIMUM_PLAYER_ENTITYS);
+	
+	
+	/**
+	 * Registers a new entity instance
+	 * @param e The instance of the entity
+	 */
+	public static void registerEntity(Entity e) {
+		if(e instanceof Player) {
+			logger.info("Registered new player.");
+			getOnlinePlayers().add((Player)e.asType(EntityType.PLAYER));
+		}
+		if(e instanceof NPC) {
+			getRegisteredNpcs().add((NPC) e.asType(EntityType.NPC));
+		}
+	}
 	
 	/**
 	 * Creates and bootstraps the server to a channel.
@@ -99,5 +128,33 @@ public class Server {
 	 */
 	public static ServerConfiguration getServerConfig() {
 		return serverConfig;
+	}
+
+	/**
+	 * @param onlinePlayers the onlinePlayers to set
+	 */
+	public static void setOnlinePlayers(EntityList<Player> onlinePlayers) {
+		Server.onlinePlayers = onlinePlayers;
+	}
+
+	/**
+	 * @return the onlinePlayers
+	 */
+	public static EntityList<Player> getOnlinePlayers() {
+		return onlinePlayers;
+	}
+
+	/**
+	 * @param registeredNpcs the registeredNpcs to set
+	 */
+	public static void setRegisteredNpcs(EntityList<NPC> registeredNpcs) {
+		Server.registeredNpcs = registeredNpcs;
+	}
+
+	/**
+	 * @return the registeredNpcs
+	 */
+	public static EntityList<NPC> getRegisteredNpcs() {
+		return registeredNpcs;
 	}
 }
