@@ -211,18 +211,13 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			/*
 			 * TODO: Write out the proper data.
 			 */
-			loginResponse.write(3); // rights
-			loginResponse.write(0);
-			loginResponse.write(0);
-			loginResponse.write(0);
-			loginResponse.write(0);
-			loginResponse.write(0);
-			loginResponse.write(0);
-			loginResponse.writeShort(1);//INDEX
-			loginResponse.write(0);
-			loginResponse.write(1);
-			
-			channel.write(loginResponse);
+			int rights = 3;
+			int index = 1;
+			channel.write(
+				loginResponse.write(rights).write(0).
+				write(0).write(0).write(0).write(0).write(0).
+				writeShort(index).write(0).write(1)
+			);
 			
 			/* 
 			 * We swap the decoder over. Decoding that is done beyond this point
@@ -235,7 +230,7 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			 * needed frames.
 			 */
 			player.getPacketSender().login();
-			
+
 			return true;
 		}
 		return false;

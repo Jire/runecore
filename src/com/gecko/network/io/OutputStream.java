@@ -107,6 +107,7 @@ public class OutputStream extends Packet {
 		return unsafeWrite(s >> 8);
 	}
 
+
 	public OutputStream writeInteger(int i) {
 		expand(4);
 		unsafeWrite(i >> 24);
@@ -147,6 +148,13 @@ public class OutputStream extends Packet {
 		expand(s.length() + 1);
 		writeBytes(s.getBytes());
 		return unsafeWrite(10);
+	}
+	
+	public OutputStream writeRS2String(String string) {
+		expand(string.length() + 1);
+		writeBytes(string.getBytes());
+		writeByte((byte)0);
+		return this;
 	}
 
 	public OutputStream writeBytes(byte[] bs) {
