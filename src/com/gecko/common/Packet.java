@@ -32,6 +32,10 @@ public class Packet {
 		this.headless = headless;
 		this.type = type;
 	}
+	
+	public boolean isEmpty() {
+		return this.getData().length == 0;
+	}
 
 	public int getId() {
 		return id;

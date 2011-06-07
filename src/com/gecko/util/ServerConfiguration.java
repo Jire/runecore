@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import com.gecko.Constants;
 import com.gecko.model.world.def.WorldListBuilder;
+import com.gecko.plugin.PluginManager;
 import com.gecko.util.region.MapDataPacker;
 import com.gecko.util.region.MapDataReader;
 
@@ -42,6 +43,11 @@ public class ServerConfiguration {
 	private RegionKeys regionKeys = new RegionKeys();
 	
 	/**
+	 * The plug-in manager
+	 */
+	private PluginManager pluginManager = new PluginManager();
+	
+	/**
 	 * This makes you wish that Java supported typedefs.
 	 */
 	private Map<Integer, int[]> mapData = new java.util.HashMap<Integer, int[]>();
@@ -53,6 +59,7 @@ public class ServerConfiguration {
 		call("start.configXStream", this);
 		call("start.readWorldList", this);
 		call("start.buildRegionData", this, new Constants(), new MapDataPacker(), new MapDataReader());
+		call("start.loadPlugins", getPluginManager());
 	}	
 	
 	/**
@@ -105,5 +112,19 @@ public class ServerConfiguration {
 	 */
 	public RegionKeys getRegionKeys() {
 		return regionKeys;
+	}
+
+	/**
+	 * @param pluginManager the pluginManager to set
+	 */
+	public void setPluginManager(PluginManager pluginManager) {
+		this.pluginManager = pluginManager;
+	}
+
+	/**
+	 * @return the pluginManager
+	 */
+	public PluginManager getPluginManager() {
+		return pluginManager;
 	}
 }

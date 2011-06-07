@@ -7,6 +7,9 @@ import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 
+import com.gecko.Server;
+import com.gecko.model.Player;
+
 /**
  * Handles incoming connections and messages.
  * @author Thomas Nappo
@@ -18,19 +21,31 @@ public class ChannelHandler extends SimpleChannelHandler {
 	 */
 	private static final Logger logger = Logger.getLogger(ChannelHandler.class.getName());
 	
+	/**
+	 * Invoked when a channel connects
+	 * channelConnected
+	 */
 	@Override
 	public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
 		logger.info("Connection received: " + ctx.getChannel().getRemoteAddress());
 	}
 	
+	/**
+	 * Invoked when a channel connection is dropped
+	 * channelDisconnected
+	 */
 	@Override
 	public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
+		Player player = (Player) ctx.getAttachment();
+		if(player != null) {
+			Server.getOnlinePlayers().remove(player);
+		}
 		logger.info("Connection closed: " + ctx.getChannel().getRemoteAddress());
 	}
 	
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
-		e.getCause().printStackTrace();
+		//e.getCause().printStackTrace();
 	}
 
 }

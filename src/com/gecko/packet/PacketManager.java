@@ -18,6 +18,17 @@ public class PacketManager {
 	 */
 	private static final PacketHandler[] mass = new PacketHandler[255];
 	
+	static { 
+		assignPackets();
+	}
+	
+	/**
+	 * Assigns packets on startup
+	 */
+	public static void assignPackets() {
+		assign(24, new PlayerChatInputPacketHandler());
+	}
+	
 	/**
 	 * Assigns a packet handler to an operation code.
 	 * @param id When the server decodes a packet with this id (op code)
@@ -46,7 +57,10 @@ public class PacketManager {
 					dummy.handle(in, player);
 					return;
 				}
-				mass[id].handle(in, player);
+				PacketHandler packet = mass[id];
+				if(packet == null)
+					return;
+				packet.handle(in, player);
 			}
 		});
 	}

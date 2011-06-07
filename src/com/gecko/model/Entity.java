@@ -1,5 +1,9 @@
 package com.gecko.model;
 
+import com.gecko.model.mask.UpdateFlags;
+import com.gecko.model.mask.walking.Sprites;
+import com.gecko.util.Misc;
+
 /**
  * A which can be interacted with and holds a grid point.
  * @author Thomas Nappo
@@ -31,12 +35,32 @@ public abstract class Entity {
 	 */
 	public void setIndex(int id) {
 		index = id;
-	}
+	}	
 	
 	/**
 	 * The entity's tile location on the map grid.
 	 */
-	protected Location location = Location.create(3222, 3222);
+	protected Location location = Location.create(3222, 3222 + Misc.random(5));
+	
+	/**
+	 * The entity's update flags
+	 */
+	private UpdateFlags updateFlags = new UpdateFlags();
+	
+	/**
+	 * The entity's walking directions
+	 */
+	private Sprites sprites = new Sprites();
+	
+	/**
+	 * Is the entity teleporting?
+	 */
+	private boolean isTeleporting;
+	
+	/**
+	 * The entity's last know region
+	 */
+	private Location lastKnownRegion;
 	
 	/**
 	 * Gets the entity's tile location on the map grid.
@@ -57,6 +81,62 @@ public abstract class Entity {
 		else if(e == EntityType.PLAYER)
 			return (Player) this;
 		return null;
+	}
+
+	/**
+	 * @param updateFlags the updateFlags to set
+	 */
+	public void setUpdateFlags(UpdateFlags updateFlags) {
+		this.updateFlags = updateFlags;
+	}
+
+	/**
+	 * @return the updateFlags
+	 */
+	public UpdateFlags getUpdateFlags() {
+		return updateFlags;
+	}
+
+	/**
+	 * @param sprites the sprites to set
+	 */
+	public void setSprites(Sprites sprites) {
+		this.sprites = sprites;
+	}
+
+	/**
+	 * @return the sprites
+	 */
+	public Sprites getSprites() {
+		return sprites;
+	}
+
+	/**
+	 * @param isTeleporting the isTeleporting to set
+	 */
+	public void setTeleporting(boolean isTeleporting) {
+		this.isTeleporting = isTeleporting;
+	}
+
+	/**
+	 * @return the isTeleporting
+	 */
+	public boolean isTeleporting() {
+		return isTeleporting;
+	}
+
+	/**
+	 * @param lastKnownRegion the lastKnownRegion to set
+	 */
+	public void setLastKnownRegion(Location lastKnownRegion) {
+		this.lastKnownRegion = lastKnownRegion;
+	}
+
+	/**
+	 * @return the lastKnownRegion
+	 */
+	public Location getLastKnownRegion() {
+		return lastKnownRegion;
 	}
 
 }

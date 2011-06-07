@@ -214,6 +214,12 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			 */
 			Server.registerEntity(player);
 			
+			/**
+			 * Sets the attachment
+			 */
+			ctx.setAttachment(player);
+			
+			
 			/*
 			 * TODO: Write out the proper data.
 			 */

@@ -1,7 +1,11 @@
 package com.gecko.model;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.jboss.netty.channel.Channel;
 
+import com.gecko.model.player.Apperance;
 import com.gecko.network.PacketSender;
 
 /**
@@ -14,6 +18,16 @@ public class Player extends Combatable {
 	 * The player's packet sender.
 	 */
 	private final PacketSender packetSender = new PacketSender(this);
+	
+	/**
+	 * A list of local players in the area
+	 */
+	private final List<Player> localPlayers = new LinkedList<Player>();
+	
+	/**
+	 * The players apperance
+	 */
+	private final Apperance apperance = new Apperance();
 	
 	/**
 	 * Gets the player's packet sender.
@@ -48,7 +62,12 @@ public class Player extends Combatable {
 	 * Encapsulates the connection session between
 	 * client and server.
 	 */
-	private final Session session;
+	public final Session session;
+	
+	/**
+	 * Is the map region changing?
+	 */
+	private boolean mapRegionChanging;
 	
 	/**
 	 * Constructs a new player.
@@ -63,4 +82,31 @@ public class Player extends Combatable {
 		return index + 32768;
 	}
 
+	/**
+	 * @return the localPlayers
+	 */
+	public List<Player> getLocalPlayers() {
+		return localPlayers;
+	}
+
+	/**
+	 * @param mapRegionChanging the mapRegionChanging to set
+	 */
+	public void setMapRegionChanging(boolean mapRegionChanging) {
+		this.mapRegionChanging = mapRegionChanging;
+	}
+
+	/**
+	 * @return the mapRegionChanging
+	 */
+	public boolean isMapRegionChanging() {
+		return mapRegionChanging;
+	}
+
+	/**
+	 * @return the apperance
+	 */
+	public Apperance getApperance() {
+		return apperance;
+	}
 }

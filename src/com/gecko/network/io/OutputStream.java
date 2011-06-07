@@ -88,6 +88,21 @@ public class OutputStream extends Packet {
 		unsafeWrite(s >> 8);
 		return unsafeWrite(s);
 	}
+	
+
+	/**
+	 * Puts a type-A byte in the buffer.
+	 * 
+	 * @param val
+	 *            The value.
+	 * @return The PacketBuilder instance, for chaining.
+	 */
+	public OutputStream writeBytesA(byte[] data, int offset, int len) {
+		for (int i = offset; i < len - offset; i++) {
+			writeByteA(data[i]);
+		}
+		return this;
+	}
 
 	public OutputStream writeShortA(int s) {
 		expand(2);

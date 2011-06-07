@@ -3,6 +3,7 @@ package com.gecko.network;
 import com.gecko.Server;
 import com.gecko.common.Packet.Type;
 import com.gecko.model.Player;
+import com.gecko.model.mask.UpdateFlags.UpdateFlag;
 import com.gecko.network.io.OutputStream;
 
 /**
@@ -38,6 +39,7 @@ public class PacketSender {
 		sendGamePane(548);
 		sendSidebar();
 		sendMessage("Welcome to RuneCore.");
+		player.getUpdateFlags().flag(UpdateFlag.APPEARANCE);
 		return this;
 	}
 	
