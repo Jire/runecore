@@ -14,6 +14,6 @@ public interface PacketHandler {
 	 * @param in The stream of input to handle the packet with.
 	 * @param player The player who called the packet.
 	 */
-	public void handle(InputStream in, Player player);
+	public void handle(InputStream in, Player player, int opcode);
 
 }

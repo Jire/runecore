@@ -27,6 +27,11 @@ public class PacketManager {
 	 */
 	public static void assignPackets() {
 		assign(24, new PlayerChatInputPacketHandler());
+		PacketHandler walking = new PlayerWalkingPacketHandler();
+		assign(32, new LoadRegionPacketHandler());
+		assign(98, walking);
+		assign(218, walking);
+		assign(249, walking);
 	}
 	
 	/**
@@ -54,13 +59,13 @@ public class PacketManager {
 			public void execute() {
 				this.stop();
 				if (id < 0) {
-					dummy.handle(in, player);
+					dummy.handle(in, player, id);
 					return;
 				}
 				PacketHandler packet = mass[id];
 				if(packet == null)
 					return;
-				packet.handle(in, player);
+				packet.handle(in, player, id);
 			}
 		});
 	}

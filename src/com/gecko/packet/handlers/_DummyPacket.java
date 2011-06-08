@@ -7,6 +7,6 @@ import com.gecko.packet.PacketHandler;
 public class _DummyPacket implements PacketHandler {
 
 	@Override
-	public void handle(InputStream in, Player player) {
+	public void handle(InputStream in, Player player, int opcode) {
 	}
 }

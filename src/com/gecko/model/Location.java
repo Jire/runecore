@@ -64,5 +64,20 @@ public class Location extends Tile {
 	public String toString() {
 		return "(" + x + "," + y + ")";
 	}
+	
+	/**
+	 * Creates a new location based on this location.
+	 * 
+	 * @param diffX
+	 *            X difference.
+	 * @param diffY
+	 *            Y difference.
+	 * @param diffZ
+	 *            Z difference.
+	 * @return The new location.
+	 */
+	public Location transform(int diffX, int diffY, int diffZ) {
+		return Location.create(x + diffX, y + diffY, z + diffZ);
+	}
 
 }

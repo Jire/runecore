@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jboss.netty.channel.Channel;
 
+import com.gecko.Server;
 import com.gecko.model.player.Apperance;
 import com.gecko.network.PacketSender;
 
@@ -30,6 +31,11 @@ public class Player extends Combatable {
 	private final Apperance apperance = new Apperance();
 	
 	/**
+	 * Force update
+	 */
+	public boolean forceUpdate = true;
+	
+	/**
 	 * Gets the player's packet sender.
 	 * 
 	 * <i><p>You can use the {@link PacketSender} to write
@@ -50,6 +56,19 @@ public class Player extends Combatable {
 	}
 	
 	/**
+	 * Invoked every 600ms
+	 */
+	public void tick() {
+		if(this.mapRegionChanging) {
+			getPacketSender().sendMapRegion();
+		}
+		if(!this.session.getChannel().isConnected()) {
+			Server.getOnlinePlayers().remove(this);
+			return;
+		}
+	}
+	
+	/**
 	 * The player's connection channel which you can
 	 * use to write out information towards the client.
 	 * @return The player's connection channel.
@@ -63,6 +82,11 @@ public class Player extends Combatable {
 	 * client and server.
 	 */
 	public final Session session;
+	
+	/**
+	 * The players run energy
+	 */
+	private int runEnergy = 100;
 	
 	/**
 	 * Is the map region changing?
@@ -108,5 +132,19 @@ public class Player extends Combatable {
 	 */
 	public Apperance getApperance() {
 		return apperance;
+	}
+
+	/**
+	 * @param runEnergy the runEnergy to set
+	 */
+	public void setRunEnergy(int runEnergy) {
+		this.runEnergy = runEnergy;
+	}
+
+	/**
+	 * @return the runEnergy
+	 */
+	public int getRunEnergy() {
+		return runEnergy;
 	}
 }

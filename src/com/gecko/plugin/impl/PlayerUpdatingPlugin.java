@@ -14,85 +14,76 @@ import com.gecko.util.Misc;
 import com.gecko.util.NameUtils;
 
 /**
- * PlayerUpdatingPlugin.java
- * RuneCore 525 www.runecore.org
- * @author Canownueasy, Sinisoul + Harry Andreas
- * 7 Jun 2011
+ * PlayerUpdatingPlugin.java RuneCore 525 www.runecore.org
+ * 
+ * @author Canownueasy, Sinisoul + Harry Andreas 7 Jun 2011
  */
 public class PlayerUpdatingPlugin implements Plugin {
 
 	/**
-	 * activation
-	 */
-	@Override
-	public void activation() {
-		
-	}
-
-	/**
 	 * loop
 	 */
-	@Override
-	public void loop() {
-		for(Player p : Server.getOnlinePlayers()) {
-			OutputStream updateBlock = new OutputStream();
-			OutputStream updatePacket = new OutputStream(187, Type.SHORT);
-			updateThisPlayerMovement(updatePacket, p);
-			updatePlayer(updatePacket, p , false);
-			updatePacket.writeBits(8, p.getLocalPlayers().size()); //TODO: Change to local players
-			for(final Iterator<Player> it$ = p.getLocalPlayers().iterator(); it$.hasNext();) {
-				final Player localPlayer = it$.next();
-				if(!Server.getOnlinePlayers().contains(localPlayer) && Misc.distance(p.getLocation(), localPlayer.getLocation()) < 17) {
-					updatePlayerMovement(updatePacket, localPlayer);
-					if(localPlayer.getUpdateFlags().isUpdateRequired()) {
-						updatePlayer(updatePacket, localPlayer, false);
-					}
-				} else {
-					it$.remove();
-					updatePacket.writeBits(1, 1);
-					updatePacket.writeBits(2, 3);
+	public void loop(Player p) {
+
+		OutputStream updateBlock = new OutputStream();
+		OutputStream updatePacket = new OutputStream(187, Type.SHORT);
+		updateThisPlayerMovement(updatePacket, p);
+		updatePlayer(updateBlock, p, false);
+		updatePacket.writeBits(8, p.getLocalPlayers().size());
+		for (final Iterator<Player> it$ = p.getLocalPlayers().iterator(); it$
+				.hasNext();) {
+			final Player localPlayer = it$.next();
+			if (!Server.getOnlinePlayers().contains(localPlayer)
+					&& Misc.distance(p.getLocation(), localPlayer.getLocation()) < 17) {
+				updatePlayerMovement(updatePacket, localPlayer);
+				if (localPlayer.getUpdateFlags().isUpdateRequired()) {
+					updatePlayer(updatePacket, localPlayer, false);
 				}
+			} else {
+				it$.remove();
+				updatePacket.writeBits(1, 1);
+				updatePacket.writeBits(2, 3);
 			}
-			for(Player serverPlayer : Server.getOnlinePlayers()) {
-				/**
-				 * Check to see if there is more than 255 players 
-				 * in the players region
-				 */
-				if(p.getLocalPlayers().size() >= 255) {
-					break;
-				}
-				
-				/**
-				 * Checks if the player is already in the list
-				 * or it's your own player instance
-				 */
-				if (serverPlayer == p || p.getLocalPlayers().contains(serverPlayer)) {
-					continue;
-				}
-				
-				/**
-				 * Adds the player to the local player list
-				 */
-				p.getLocalPlayers().add(serverPlayer);
-				
-				/**
-				 * Adds the player to the updatePacket
-				 */
-				addNewPlayer(updatePacket, p, serverPlayer);
-				
-				/**
-				 * Updates the player into the login block
-				 */
-				updatePlayer(updateBlock, serverPlayer, true);
+		}
+		for (Player serverPlayer : Server.getOnlinePlayers()) {
+			/**
+			 * Check to see if there is more than 255 players in the players
+			 * region
+			 */
+			if (p.getLocalPlayers().size() >= 255) {
+				break;
 			}
-			if(!updateBlock.isEmpty()) {
-				updatePacket.writeBits(11, 2047);
-				updatePacket.writeByte(updateBlock.getData());
-			} 
-			p.write(updatePacket);
-		}		
+
+			/**
+			 * Checks if the player is already in the list or it's your own
+			 * player instance
+			 */
+			if (serverPlayer == p || p.getLocalPlayers().contains(serverPlayer)) {
+				continue;
+			}
+
+			/**
+			 * Adds the player to the local player list
+			 */
+			p.getLocalPlayers().add(serverPlayer);
+
+			/**
+			 * Adds the player to the updatePacket
+			 */
+			addNewPlayer(updatePacket, p, serverPlayer);
+
+			/**
+			 * Updates the player into the login block
+			 */
+			updatePlayer(updateBlock, serverPlayer, true);
+		}
+		if (!updateBlock.isEmpty()) {
+			updatePacket.writeBits(11, 2047);
+			updatePacket.writeByte(updateBlock.getData());
+		}
+		p.write(updatePacket);
 	}
-	
+
 	/**
 	 * Updates a player.
 	 * 
@@ -107,7 +98,6 @@ public class PlayerUpdatingPlugin implements Plugin {
 	 */
 	public void updatePlayer(OutputStream packet, Player otherPlayer,
 			boolean forceAppearance) {
-
 
 		/*
 		 * If no update is required and we don't have to force an appearance
@@ -173,44 +163,45 @@ public class PlayerUpdatingPlugin implements Plugin {
 			 * Append the appropriate updates.
 			 */
 			if (flags.get(UpdateFlag.GRAPHICS)) {
-				//appendGraphicsUpdate(packet, otherPlayer);
+				// appendGraphicsUpdate(packet, otherPlayer);
 			}
 			if (flags.get(UpdateFlag.ANIMATION)) {
-				//appendAnimationUpdate(packet, otherPlayer);
+				// appendAnimationUpdate(packet, otherPlayer);
 			}
 			if (flags.get(UpdateFlag.FORCED_CHAT)) {
-				//packet.putRS2String(player.getForceText());
+				// packet.putRS2String(player.getForceText());
 			}
 			if (flags.get(UpdateFlag.CHAT)) {
-				//appendChatUpdate(packet, otherPlayer);
+				// appendChatUpdate(packet, otherPlayer);
 			}
 			if (flags.get(UpdateFlag.FACE_ENTITY)) {
-				//final Entity entity = otherPlayer.getInteractingEntity();
-				//packet.putLEShortA(entity == null ? -1 : entity
-				//		.getClientIndex());
+				// final Entity entity = otherPlayer.getInteractingEntity();
+				// packet.putLEShortA(entity == null ? -1 : entity
+				// .getClientIndex());
 			}
 			if (flags.get(UpdateFlag.APPEARANCE) || forceAppearance) {
 				appendPlayerAppearanceUpdate(packet, otherPlayer);
 			}
 			if (flags.get(UpdateFlag.FACE_COORDINATE)) {
-				//appendFaceLocationUpdate(packet, otherPlayer);
+				// appendFaceLocationUpdate(packet, otherPlayer);
 			}
 			if (flags.get(UpdateFlag.HIT)) {
-				//appendHitUpdate(otherPlayer, packet);
+				// appendHitUpdate(otherPlayer, packet);
 			}
 			if (flags.get(UpdateFlag.HIT_2)) {
-				//appendHit2Update(otherPlayer, packet);
+				// appendHit2Update(otherPlayer, packet);
 			}
 		}
 	}
-	
+
 	/**
 	 * Updates this player's movement.
 	 * 
 	 * @param packet
 	 *            The packet.
 	 */
-	private void updateThisPlayerMovement(final OutputStream packet, Player player) {
+	private void updateThisPlayerMovement(final OutputStream packet,
+			Player player) {
 		/*
 		 * Check if the player is teleporting.
 		 */
@@ -285,7 +276,8 @@ public class PlayerUpdatingPlugin implements Plugin {
 					/*
 					 * This is the player's running direction.
 					 */
-					packet.writeBits(3, player.getSprites().getSecondarySprite());
+					packet.writeBits(3, player.getSprites()
+							.getSecondarySprite());
 
 					/*
 					 * This is the player's walking direction.
@@ -322,7 +314,7 @@ public class PlayerUpdatingPlugin implements Plugin {
 			}
 		}
 	}
-	
+
 	public void updatePlayerMovement(OutputStream packet, Player otherPlayer) {
 		/*
 		 * Check which type of movement took place.
@@ -397,8 +389,9 @@ public class PlayerUpdatingPlugin implements Plugin {
 					otherPlayer.getUpdateFlags().isUpdateRequired() ? 1 : 0);
 		}
 	}
-	
-	private void addNewPlayer(OutputStream packet, Player player, Player otherPlayer) {
+
+	private void addNewPlayer(OutputStream packet, Player player,
+			Player otherPlayer) {
 		/*
 		 * Write the player index.
 		 */
@@ -432,7 +425,7 @@ public class PlayerUpdatingPlugin implements Plugin {
 		 */
 		packet.writeBits(3, 1);
 	}
-	
+
 	/**
 	 * Appends an appearance update.
 	 * 
@@ -456,17 +449,20 @@ public class PlayerUpdatingPlugin implements Plugin {
 		playerProps.write((byte) 0); // skull icon
 
 		if (!otherPlayer.getApperance().isNpc()) {
+
 			for (int i = 0; i < 4; i++) {
 				playerProps.write((byte) 0);
 			}
-			playerProps.writeShort((short) 0x100 + app.getChest());
-			playerProps.writeShort((short) 0x100 + app.getArms());
-			playerProps.writeShort((short) 0x100 + app.getLegs());
-			playerProps.writeShort((short) 0x100 + app.getHead());
-			playerProps.writeShort((short) 0x100 + app.getHead());
-			playerProps.writeShort((short) 0x100 + app.getHands());
-			playerProps.writeShort((short) 0x100 + app.getFeet());
-			playerProps.writeShort((short) 0x100 + app.getBeard());
+
+			playerProps.writeShort(0x100 + app.getChest()); // Chest model
+			playerProps.write((byte) 0); // Shield model
+			playerProps.writeShort(0x100 + app.getArms()); // Arms model
+			playerProps.writeShort(0x100 + app.getLegs()); // Legs model
+			playerProps.writeShort(0x100 + app.getHead()); // Head model
+			playerProps.writeShort(0x100 + app.getHands()); // Hands model
+			playerProps.writeShort(0x100 + app.getFeet()); // Feet model
+			playerProps.writeShort(0x100 + app.getBeard()); // Beard model
+
 		} else {
 			playerProps.writeShort(-1);
 			playerProps.writeShort(otherPlayer.getApperance().getNpcIndex());
@@ -477,19 +473,18 @@ public class PlayerUpdatingPlugin implements Plugin {
 		playerProps.write((byte) app.getFeetColour()); // feetc
 		playerProps.write((byte) app.getSkinColour()); // skinc
 
-		playerProps.writeShort((short) 808); // stand
-		playerProps.writeShort((short) 0x337); // stand turn
-		playerProps.writeShort((short) 808); // walk
-		playerProps.writeShort((short) 0x334); // turn 180
-		playerProps.writeShort((short) 0x335); // turn 90 cw
-		playerProps.writeShort((short) 0x336); // turn 90 ccw
-		playerProps.writeShort((short) 808); // run
+		playerProps.writeShort(0x328); // stand
+		playerProps.writeShort(0x337); // stand turn
+		playerProps.writeShort(0x333); // walk
+		playerProps.writeShort(0x334); // turn 180
+		playerProps.writeShort(0x335); // turn 90 cw
+		playerProps.writeShort(0x336); // turn 90 ccw
+		playerProps.writeShort(0x338); // run
 
-		playerProps.writeLong(NameUtils.nameToLong(otherPlayer.session.getUsername()));
+		playerProps.writeLong(NameUtils.nameToLong(otherPlayer.session
+				.getUsername()));
 		playerProps.write((byte) 3);// combat
-																	// level
-		playerProps.writeShort((short)1337);// total
-																		// level
+		playerProps.writeShort((short) 10);// total
 		playerProps.write((byte) 0);
 
 		final OutputStream propsPacket = playerProps;
@@ -498,11 +493,30 @@ public class PlayerUpdatingPlugin implements Plugin {
 	}
 
 	/**
+	 * activation
+	 */
+	@Override
+	public void activation() {
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * loop
+	 */
+	@Override
+	public void loop() {
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
 	 * needsLoop
 	 */
 	@Override
 	public boolean needsLoop() {
-		return true;
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	/**
@@ -510,6 +524,7 @@ public class PlayerUpdatingPlugin implements Plugin {
 	 */
 	@Override
 	public void remove() {
-	}
+		// TODO Auto-generated method stub
 
+	}
 }

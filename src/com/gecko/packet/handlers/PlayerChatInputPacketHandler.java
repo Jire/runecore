@@ -18,7 +18,7 @@ public class PlayerChatInputPacketHandler implements PacketHandler {
 	 * handle
 	 */
 	@Override
-	public void handle(InputStream in, Player player) {
+	public void handle(InputStream in, Player player, int opcode) {
 		final int COLOUR = in.read();
 		final int SFX = in.read();
 		final int LENGTH = in.read();

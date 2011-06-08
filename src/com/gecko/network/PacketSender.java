@@ -38,6 +38,7 @@ public class PacketSender {
 		sendMapRegion();
 		sendGamePane(548);
 		sendSidebar();
+		sendEnergy();
 		sendMessage("Welcome to RuneCore.");
 		player.getUpdateFlags().flag(UpdateFlag.APPEARANCE);
 		return this;
@@ -47,6 +48,7 @@ public class PacketSender {
 	 * Sends the map region.
 	 */
 	public PacketSender sendMapRegion() {
+		player.setLastKnownRegion(player.getLocation());
 		final OutputStream out = new OutputStream(93, Type.SHORT);
 		boolean forceSend = true;
 		if ((player.getLocation().getRegionX() / 8 == 48 || player
@@ -92,6 +94,62 @@ public class PacketSender {
 	public PacketSender sendGamePane(int pane) {
 		player.write(new OutputStream(230).writeShort(0).writeShort(pane)
 				.write(0));
+		return this;
+	}
+	
+	/**
+	 * Sends a config.
+	 * 
+	 * @param id
+	 *            The id.
+	 * @param value
+	 *            The value.
+	 * @return The action sender instance, for chaining.
+	 */
+	public PacketSender sendConfig(int id, int value) {
+		if (value < 128) {
+			sendConfigOne(id, value);
+		} else {
+			sendConfigTwo(id, value);
+		}
+		return this;
+	}
+
+	/**
+	 * Sends config one.
+	 * 
+	 * @param id
+	 *            The config id.
+	 * @param value
+	 *            The config value.
+	 * @return The action sender instance, for chaining.
+	 */
+	public PacketSender sendConfigOne(int id, int value) {
+		player.write(new OutputStream(85).writeLEShortA(id).writeByteA(value));
+		return this;
+	}
+
+	/**
+	 * Sends config two.
+	 * 
+	 * @param id
+	 *            The config id.
+	 * @param value
+	 *            The config value.
+	 * @return The action sender instance, for chaining.
+	 */
+	public PacketSender sendConfigTwo(int id, int value) {
+		player.write(new OutputStream(173).writeShortA(id).writeInteger1(value));
+		return this;
+	}
+	
+	/**
+	 * Sends the player's engery.
+	 * 
+	 * @return The action sender instance, for chaining.
+	 */
+	public PacketSender sendEnergy() {
+		player.write(new OutputStream(80).write((byte) player.getRunEnergy()));
 		return this;
 	}
 

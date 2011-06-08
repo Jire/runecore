@@ -11,7 +11,7 @@ public final class Apperance {
 	/**
 	 * The npc index.
 	 */
-	private final int npcIndex = 1;
+	private final int npcIndex = -1;
 	/**
 	 * The gender.
 	 */

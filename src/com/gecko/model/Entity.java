@@ -2,7 +2,7 @@ package com.gecko.model;
 
 import com.gecko.model.mask.UpdateFlags;
 import com.gecko.model.mask.walking.Sprites;
-import com.gecko.util.Misc;
+import com.gecko.model.mask.walking.WalkingQueue;
 
 /**
  * A which can be interacted with and holds a grid point.
@@ -40,7 +40,17 @@ public abstract class Entity {
 	/**
 	 * The entity's tile location on the map grid.
 	 */
-	protected Location location = Location.create(3222, 3222 + Misc.random(5));
+	protected Location location = Location.create(3222, 3222);
+	
+	/**
+	 * Walking queue for entity
+	 */
+	private WalkingQueue walkingQueue = new WalkingQueue(this);
+	
+	/**
+	 * The entity's teleport target
+	 */
+	private Location teleportTarget = null;
 	
 	/**
 	 * The entity's update flags
@@ -63,11 +73,39 @@ public abstract class Entity {
 	private Location lastKnownRegion;
 	
 	/**
+	 * 
+	 */
+	private boolean mapRegionChanging;
+	
+	/**
 	 * Gets the entity's tile location on the map grid.
 	 * @return The entity's {@link #location}
 	 */
 	public Location getLocation() {
 		return location;
+	}
+	
+	/**
+	 * Does the entity have a teleport target?
+	 * @return If it has a tele target
+	 */
+	public boolean hasTeleportTarget() {
+		return getTeleportTarget() != null;
+	}
+	
+	/**
+	 * Resets the teleport target
+	 */
+	public void resetTeleportTarget() {
+		setTeleportTarget(null);
+	}
+	
+	/**
+	 * Sets the entity's location
+	 * @param loc The location of the entity to set!
+	 */
+	public void setLocation(Location loc) {
+		this.location = loc;
 	}
 	
 	/**
@@ -137,6 +175,48 @@ public abstract class Entity {
 	 */
 	public Location getLastKnownRegion() {
 		return lastKnownRegion;
+	}
+
+	/**
+	 * @param teleportTarget the teleportTarget to set
+	 */
+	public void setTeleportTarget(Location teleportTarget) {
+		this.teleportTarget = teleportTarget;
+	}
+
+	/**
+	 * @return the teleportTarget
+	 */
+	public Location getTeleportTarget() {
+		return teleportTarget;
+	}
+
+	/**
+	 * @param mapRegionChanging the mapRegionChanging to set
+	 */
+	public void setMapRegionChanging(boolean mapRegionChanging) {
+		this.mapRegionChanging = mapRegionChanging;
+	}
+
+	/**
+	 * @return the mapRegionChanging
+	 */
+	public boolean isMapRegionChanging() {
+		return mapRegionChanging;
+	}
+
+	/**
+	 * @param walkingQueue the walkingQueue to set
+	 */
+	public void setWalkingQueue(WalkingQueue walkingQueue) {
+		this.walkingQueue = walkingQueue;
+	}
+
+	/**
+	 * @return the walkingQueue
+	 */
+	public WalkingQueue getWalkingQueue() {
+		return walkingQueue;
 	}
 
 }

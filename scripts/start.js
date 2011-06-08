@@ -19,3 +19,7 @@
 		reader.load(config.mapData)
 	}
 	
+	function loadPlugins(plugin) {
+		plugin.loadInternalPlugins()
+		plugin.startLoops()
+	}
