@@ -72,8 +72,14 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			break;
 		case ON_DEMAND:
 			if (buffer.readableBytes() < 8) return false;
-			buffer.skipBytes(8); // request bytes
+			
+			byte cache = buffer.readByte();
+			short file = buffer.readShort();
+			byte priority = buffer.readByte();
+			
+			Server.getServerConfig().logger.info("[ONDEMAND]: Cache: "+cache+" File: " +file + " priority: "+priority);
 
+			//channel.write(new OutputStream().writeBytes(Server.getServerConfig().getCacheManager().getFile(cache, file)));
 			/*
 			 * here's where we give the client the update
 			 * keys. these "trick" the client to pass the on-demand
@@ -92,9 +98,6 @@ public class FrontDecoder extends ReplayingDecoder<FrontDecoder.State> {
 			 * TODO: write world server?
 			 */
 			final int loginOpcode = buffer.readInt();
-			//logger.info("Requesting world list: "+loginOpcode);
-			//
-			
 			//channel.write(WorldListEncoder.encode(channel, loginOpcode == 0, true));
 			channel.write(new OutputStream().write(Constants.WORLD_LIST_DATA)).addListener(ChannelFutureListener.CLOSE);
 			return true;

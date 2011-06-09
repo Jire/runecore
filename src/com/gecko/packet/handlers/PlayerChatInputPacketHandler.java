@@ -19,11 +19,11 @@ public class PlayerChatInputPacketHandler implements PacketHandler {
 	 */
 	@Override
 	public void handle(InputStream in, Player player, int opcode) {
-		final int COLOUR = in.read();
-		final int SFX = in.read();
-		final int LENGTH = in.read();
+		final byte COLOUR = (byte) in.read();
+		final byte SFX = (byte)  in.read();
+		final byte LENGTH = (byte) in.read();
 		String msg = ChatUtils.decryptPlayerChat(in, LENGTH);
-		Server.getServerConfig().logger.info("CHAT MSG: "+msg);
+		Server.getServerConfig().logger.info("CHAT MSG: "+msg+" Length "+LENGTH);
 	}
 
 }

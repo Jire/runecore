@@ -54,6 +54,7 @@ public class PacketManager {
 	 * @param player The player who sent the packet.
 	 */
 	public static void handle(final int id, final InputStream in, final Player player) {
+		Server.getServerConfig().logger.info("OPCODE: "+id);
 		Server.getTaskScheduler().schedule(new Task() {
 			@Override
 			public void execute() {

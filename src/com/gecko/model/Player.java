@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.jboss.netty.channel.Channel;
 
-import com.gecko.Server;
 import com.gecko.model.player.Apperance;
 import com.gecko.network.PacketSender;
 
@@ -59,13 +58,6 @@ public class Player extends Combatable {
 	 * Invoked every 600ms
 	 */
 	public void tick() {
-		if(this.mapRegionChanging) {
-			getPacketSender().sendMapRegion();
-		}
-		if(!this.session.getChannel().isConnected()) {
-			Server.getOnlinePlayers().remove(this);
-			return;
-		}
 	}
 	
 	/**

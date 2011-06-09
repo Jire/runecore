@@ -25,6 +25,10 @@ public class PlayerUpdatingPlugin implements Plugin {
 	 */
 	public void loop(Player p) {
 
+		if(p.isMapRegionChanging()) {
+			p.getPacketSender().sendMapRegion();
+		}
+		
 		OutputStream updateBlock = new OutputStream();
 		OutputStream updatePacket = new OutputStream(187, Type.SHORT);
 		updateThisPlayerMovement(updatePacket, p);
@@ -37,7 +41,7 @@ public class PlayerUpdatingPlugin implements Plugin {
 					&& Misc.distance(p.getLocation(), localPlayer.getLocation()) < 17) {
 				updatePlayerMovement(updatePacket, localPlayer);
 				if (localPlayer.getUpdateFlags().isUpdateRequired()) {
-					updatePlayer(updatePacket, localPlayer, false);
+					updatePlayer(updateBlock, localPlayer, false);
 				}
 			} else {
 				it$.remove();
@@ -206,6 +210,7 @@ public class PlayerUpdatingPlugin implements Plugin {
 		 * Check if the player is teleporting.
 		 */
 		if (player.isTeleporting() || player.isMapRegionChanging()) {
+			
 			/*
 			 * They are, so an update is required.
 			 */
@@ -412,8 +417,8 @@ public class PlayerUpdatingPlugin implements Plugin {
 		/*
 		 * Write the x and y offsets.
 		 */
-		packet.writeBits(5, yPos);
 		packet.writeBits(5, xPos);
+		packet.writeBits(5, yPos);
 
 		/*
 		 * We should discard client-side walk queues.

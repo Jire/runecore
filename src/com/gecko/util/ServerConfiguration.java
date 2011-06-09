@@ -1,9 +1,11 @@
 package com.gecko.util;
 
+import java.io.FileNotFoundException;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import com.gecko.Constants;
+import com.gecko.cache.CacheManager;
 import com.gecko.model.world.def.WorldListBuilder;
 import com.gecko.plugin.PluginManager;
 import com.gecko.util.region.MapDataPacker;
@@ -48,6 +50,11 @@ public class ServerConfiguration {
 	private PluginManager pluginManager = new PluginManager();
 	
 	/**
+	 * Instance of the cache manager
+	 */
+	private CacheManager cacheManager;
+	
+	/**
 	 * This makes you wish that Java supported typedefs.
 	 */
 	private Map<Integer, int[]> mapData = new java.util.HashMap<Integer, int[]>();
@@ -60,6 +67,11 @@ public class ServerConfiguration {
 		call("start.readWorldList", this);
 		call("start.buildRegionData", this, new Constants(), new MapDataPacker(), new MapDataReader());
 		call("start.loadPlugins", getPluginManager());
+		try {
+			setCacheManager(new CacheManager());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}	
 	
 	/**
@@ -126,5 +138,19 @@ public class ServerConfiguration {
 	 */
 	public PluginManager getPluginManager() {
 		return pluginManager;
+	}
+
+	/**
+	 * @param cacheManager the cacheManager to set
+	 */
+	public void setCacheManager(CacheManager cacheManager) {
+		this.cacheManager = cacheManager;
+	}
+
+	/**
+	 * @return the cacheManager
+	 */
+	public CacheManager getCacheManager() {
+		return cacheManager;
 	}
 }

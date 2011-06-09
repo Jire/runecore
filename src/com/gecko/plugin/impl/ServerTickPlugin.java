@@ -26,7 +26,11 @@ public class ServerTickPlugin implements Plugin {
 	 */
 	@Override
 	public void loop() {
-		
+		for(Player p : Server.getOnlinePlayers()) {
+			if(!p.session.getChannel().isConnected()) {
+				Server.getOnlinePlayers().remove(p);
+			}
+		}
 		for(Player p : Server.getOnlinePlayers()) {
 			p.getWalkingQueue().processNextMovement();
 			p.tick();

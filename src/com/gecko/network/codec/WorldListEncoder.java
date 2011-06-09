@@ -20,6 +20,7 @@ public class WorldListEncoder {
 	 * @param chan
 	 * @param status
 	 */
+	@SuppressWarnings("unused")
 	public static OutputStream encode(Channel chan, boolean... status) {
 		
 		int worldListSize = Server.getServerConfig().getWorldListBuilder().worldList.size();
@@ -37,26 +38,24 @@ public class WorldListEncoder {
 			
 			for (final WorldDef w : Server.getServerConfig().getWorldListBuilder().worldList) {
 				BufferUtils.putSmart(packet, w.worldId);
-				packet.write(0);
-				packet.write(0);
-				BufferUtils.putJagString(packet, ""); // activity
-				BufferUtils.putJagString(packet, "127.0.0.1"); // ip // address
+				packet.write((byte)1);
+				packet.write((byte)2);
+				packet.writeRS2String("World1");
+				packet.writeRS2String("play.runecore.org"); // ip // address
 			}
 			
-			packet.write(-626474014);
+			packet.writeInteger(-626474014);
 		}
 		
 		if(status[0]) {
 			for (final WorldDef w : Server.getServerConfig().getWorldListBuilder().worldList) {
-				BufferUtils.putSmart(packet, w.worldId); // world id
-				packet.writeShort((short) 1337); // player count
+				BufferUtils.putSmart(packet, 1); // world id
+				packet.writeShort((short) 5); // player count
 			}
 		}
 		
 		OutputStream finalBuffer = new OutputStream();
-		finalBuffer.write(0)
-					.writeShort((short) packet.getData().length)
-					.writeByte(packet.getData());
+		finalBuffer.write(0).writeShort((short) packet.getData().length).writeByte(packet.getData());
 		
 		return finalBuffer;
 	}
@@ -64,7 +63,7 @@ public class WorldListEncoder {
 	public static void setWorldLocations(OutputStream buffer) {
 		for(WorldDef def: Server.getServerConfig().getWorldListBuilder().worldList) {
 			BufferUtils.putSmart(buffer, def.loc.opcode);
-			BufferUtils.putJagString(buffer, def.loc.name);
+			buffer.writeRS2String("Nigeria");
 		}
 	}
 

@@ -7,6 +7,7 @@ public class InputStream extends ByteArrayInputStream {
 	public InputStream(byte[] data) {
 		super(data);
 	}
+	
 
 	public int readByteA() {
 		return read() - 128;

@@ -6,6 +6,7 @@ public final class Constants {
 	
 	public static final String SCRIPT_DIR = "./scripts/";
 	public static final File MAPDATA_FILE = new File("data/mapdata.dat");
+	public static final String CACHE_DIRECTORY = "c:/cache/";
 	
 	public static final int MAXIMUM_PLAYER_ENTITYS = 2047;
 	

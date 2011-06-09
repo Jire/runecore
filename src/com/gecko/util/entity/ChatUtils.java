@@ -118,7 +118,7 @@ public class ChatUtils {
 			int i_4_ = 0;
 			String s = "";
 			for (;;) {
-				final byte i_7_ = (byte) str.read();
+				final byte i_7_ = (byte) str.readInteger();
 				if (i_7_ >= 0) {
 					i_4_++;
 				} else {

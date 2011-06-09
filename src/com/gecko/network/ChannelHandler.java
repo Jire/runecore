@@ -37,7 +37,9 @@ public class ChannelHandler extends SimpleChannelHandler {
 	@Override
 	public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
 		Player player = (Player) ctx.getAttachment();
+		logger.info("Wasn't null." + (ctx.getAttachment() != null));
 		if(player != null) {
+			logger.info("Player wasn't null!");
 			Server.getOnlinePlayers().remove(player);
 		}
 		logger.info("Connection closed: " + ctx.getChannel().getRemoteAddress());
